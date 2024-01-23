@@ -20,12 +20,14 @@ public class Room {
     @Getter
     @Setter
     private String name;
+    private EnumMap<CardinalPoints, Door> doors;
 
     public Room(String name) {
         this.name = name;
         items = new ArrayList<>();
         animals = new ArrayList<>();
         adjacentRooms = new EnumMap<>(CardinalPoints.class);
+        doors = new EnumMap<>(CardinalPoints.class);
     }
 
     public int getItemsNumber() {
@@ -46,6 +48,10 @@ public class Room {
 
     public void addAdjacentRoom(CardinalPoints cardinalPoint, Room room) {
         adjacentRooms.put(cardinalPoint, room);
+    }
+
+    public void addDoor(CardinalPoints cardinalPoint, Door door) {
+        doors.put(cardinalPoint, door);
     }
 
     public void removeAdjacentRoom(CardinalPoints cardinalPoint) {
@@ -72,6 +78,9 @@ public class Room {
         return adjacentRooms.get(cardinalPoint);
     }
 
+    public Door getDoorByCardinalPoint(CardinalPoints cardinalPoint) {
+        return doors.get(cardinalPoint);
+    }
 
     public Item getItemByName(String name) {
         return items.stream()
@@ -96,9 +105,8 @@ public class Room {
     private String getAdjacentRoomListAsString() {
         return adjacentRooms.keySet()
                 .stream()
-                .map(CardinalPoints::getName)
+                .map(cardinalPoint -> cardinalPoint.getName().concat("(" + doors.get(cardinalPoint).getDoorStatusAsString() + ")"))
                 .collect(Collectors.joining(", "));
-
     }
 
     @Override
