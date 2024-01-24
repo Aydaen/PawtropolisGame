@@ -19,6 +19,7 @@ import java.util.Scanner;
 public class GameController implements CommandLineRunner {
 
     private static final Scanner scanner = new Scanner(System.in);
+    @Getter
     private final MapController mapController;
     private final InputController inputController;
     private final CommandFactory commandFactory;
@@ -28,9 +29,6 @@ public class GameController implements CommandLineRunner {
     @Setter
     @Getter
     private Player player;
-    @Setter
-    @Getter
-    private Room currentRoom;
 
     @Autowired
     public GameController(InputController inputController, MapController mapController, CommandFactory commandFactory) {
@@ -67,6 +65,14 @@ public class GameController implements CommandLineRunner {
     @Override
     public void run(String... args) {
         startGame();
+    }
+
+    public Room getCurrentRoom() {
+        return mapController.getCurrentRoom();
+    }
+
+    public void setCurrentRoom(Room room) {
+        mapController.setCurrentRoom(room);
     }
 }
 
