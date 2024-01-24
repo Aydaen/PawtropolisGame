@@ -56,29 +56,35 @@ public class GoCommand implements CommandWithParam {
         String answer = scanner.nextLine();
 
         if (answer.equalsIgnoreCase("Y")) {
-            log.info("Type the name of the chosen item");
-
-            answer = scanner.nextLine();
-            Item item = player.getItemFromBag(answer);
-            if (item != null) {
-
-                if (item.name().equalsIgnoreCase("Key")) {
-                    log.info("You unlocked the door!");
-                    door.setLocked(false);
-                    player.removeItem(item);
-                    gameController.setCurrentRoom(currentRoom.getAdjacentRoomByCardinalPoint(cardinalPoint));
-                    return gameController.getCurrentRoom().toString();
-                } else {
-                    return "This is not the right item";
-                }
-
-            } else {
-                return "The selected item is not in the bag";
-            }
-        } else if (answer.equalsIgnoreCase("N")){
+            return handleUnlockAttempt(door, cardinalPoint, scanner);
+        } else if (answer.equalsIgnoreCase("N")) {
             return "";
         } else {
             return "Invalid input";
+        }
+    }
+
+    private String handleUnlockAttempt(Door door, CardinalPoints cardinalPoint, Scanner scanner) {
+        log.info("Type the name of the chosen item");
+        String itemName = scanner.nextLine();
+        Item item = player.getItemFromBag(itemName);
+
+        if (item != null) {
+            return useUnlockingItem(door, cardinalPoint, item);
+        } else {
+            return "The selected item is not in the bag";
+        }
+    }
+
+    private String useUnlockingItem(Door door, CardinalPoints cardinalPoint, Item item) {
+        if (item.name().equalsIgnoreCase("Key")) {
+            log.info("You unlocked the door!");
+            door.setLocked(false);
+            player.removeItem(item);
+            gameController.setCurrentRoom(currentRoom.getAdjacentRoomByCardinalPoint(cardinalPoint));
+            return gameController.getCurrentRoom().toString();
+        } else {
+            return "This is not the right item";
         }
     }
 }
