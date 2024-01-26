@@ -34,11 +34,11 @@ public class GoCommand implements CommandWithParam {
             return "Invalid input";
         }
 
-        if (currentRoom.adjacentRoomExists(cardinalPoint)) {
+        if (currentRoom.getDoorByCardinalPoint(cardinalPoint) != null) {
             Door door = currentRoom.getDoorByCardinalPoint(cardinalPoint);
 
             if (mapController.handleOpenDoorAttempt(door, player)) {
-                mapController.changeRoom(cardinalPoint);
+                mapController.changeRoom(door);
                 return gameController.getCurrentRoom().toString();
             } else {
                 return "";

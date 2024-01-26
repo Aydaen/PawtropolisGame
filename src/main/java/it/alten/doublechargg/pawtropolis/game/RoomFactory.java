@@ -31,7 +31,6 @@ public class RoomFactory {
         Room room = new Room(Integer.toString(count));
         val MAXIMUM_ITEMS = 4;
         final int availableItemsCount = items.length;
-        room.addItem(new Item(4L, "Key", "A key", 1));
         while (room.getItemsNumber() <= randomizer.nextInt(MAXIMUM_ITEMS + 1)) {
             int selectedItemIndex = randomizer.nextInt(availableItemsCount);
             room.addItem(items[selectedItemIndex]);

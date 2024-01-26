@@ -46,7 +46,6 @@ public class GameController implements CommandLineRunner {
     public void startGame() {
         mapController.createMap();
         setPlayer(createPlayer());
-        setCurrentRoom(mapController.getRoomList().getFirst());
         try {
             log.info(((CommandWithoutParam) commandFactory.createCommand("Help")).execute());
         } catch (CommandFailedException e) {

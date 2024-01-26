@@ -24,7 +24,6 @@ import java.util.Scanner;
 public class MapController {
 
     private static final Random RANDOMIZER = new Random();
-    private final List<Room> roomList;
     private final RoomFactory roomFactory;
     @Getter
     @Setter
@@ -33,10 +32,11 @@ public class MapController {
     @Autowired
     private MapController(RoomFactory roomFactory) {
         this.roomFactory = roomFactory;
-        roomList = new ArrayList<>();
+        currentRoom = createMap();
     }
 
-    public void createMap() {
+    public Room createMap() {
+        List<Room> roomList = new ArrayList<>();
         val MINIMUM_ROOMS = 8;
         val MAXIMUM_ROOMS = 15;
         final int roomNumber = RANDOMIZER.nextInt(MINIMUM_ROOMS, MAXIMUM_ROOMS + 1);
@@ -45,19 +45,15 @@ public class MapController {
         }
         for (int i = 0; i < roomNumber - 1; i++) {
             var selectedCardinalPointIndex = RANDOMIZER.nextInt(CardinalPoints.values().length);
-            while (roomList.get(i).adjacentRoomExists(CardinalPoints.values()[selectedCardinalPointIndex])) {
-                selectedCardinalPointIndex = RANDOMIZER.nextInt(CardinalPoints.values().length);
-            }
-            connectRooms(CardinalPoints.values()[selectedCardinalPointIndex], roomList.get(i), roomList.get(i + 1));
+            CardinalPoints cardinalPoint = CardinalPoints.values()[selectedCardinalPointIndex];
+            connectRooms(cardinalPoint, roomList.get(i), roomList.get(i + 1));
         }
-        currentRoom = roomList.getFirst();
+        return roomList.getFirst();
     }
 
     public void connectRooms(CardinalPoints cardinalPoint, Room room1, Room room2) {
-        Door door = new Door();
-        room1.addAdjacentRoom(cardinalPoint, room2);
+        Door door = new Door(room1, room2);
         room1.addDoor(cardinalPoint, door);
-        room2.addAdjacentRoom(CardinalPoints.getOppositeCardinalPoint(cardinalPoint), room1);
         room2.addDoor(CardinalPoints.getOppositeCardinalPoint(cardinalPoint), door);
     }
 
@@ -94,7 +90,7 @@ public class MapController {
     }
 
     private boolean useUnlockingItem(Door door, Item item, Player player) {
-        if (item.name().equalsIgnoreCase("Key")) {
+        if (item.name().equalsIgnoreCase(door.getUnlockingItem().name())) {
             log.info("You unlocked the door!");
             door.setLocked(false);
             player.removeItem(item);
@@ -105,8 +101,10 @@ public class MapController {
         }
     }
 
-    public void changeRoom(CardinalPoints cardinalPoint) {
-        setCurrentRoom(currentRoom.getAdjacentRoomByCardinalPoint(cardinalPoint));
+    public void changeRoom(Door door) {
+        currentRoom = door.getDestinationRoom();
+        log.info(door.toString());
+        door.swapRooms();
     }
 }
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 
@@ -16,7 +17,7 @@ public class Room {
 
     private final List<Item> items;
     private final List<Animal> animals;
-    private final EnumMap<CardinalPoints, Room> adjacentRooms;
+//    private final EnumMap<CardinalPoints, Room> adjacentRooms;
     @Getter
     @Setter
     private String name;
@@ -26,7 +27,7 @@ public class Room {
         this.name = name;
         items = new ArrayList<>();
         animals = new ArrayList<>();
-        adjacentRooms = new EnumMap<>(CardinalPoints.class);
+//        adjacentRooms = new EnumMap<>(CardinalPoints.class);
         doors = new EnumMap<>(CardinalPoints.class);
     }
 
@@ -46,21 +47,21 @@ public class Room {
         return items.contains(item);
     }
 
-    public void addAdjacentRoom(CardinalPoints cardinalPoint, Room room) {
-        adjacentRooms.put(cardinalPoint, room);
-    }
+//    public void addAdjacentRoom(CardinalPoints cardinalPoint, Room room) {
+//        adjacentRooms.put(cardinalPoint, room);
+//    }
 
     public void addDoor(CardinalPoints cardinalPoint, Door door) {
         doors.put(cardinalPoint, door);
     }
 
-    public void removeAdjacentRoom(CardinalPoints cardinalPoint) {
-        adjacentRooms.remove(cardinalPoint);
-    }
+//    public void removeAdjacentRoom(CardinalPoints cardinalPoint) {
+//        adjacentRooms.remove(cardinalPoint);
+//    }
 
-    public boolean adjacentRoomExists(CardinalPoints cardinalPoint) {
-        return Objects.nonNull(adjacentRooms.get(cardinalPoint));
-    }
+//    public boolean adjacentRoomExists(CardinalPoints cardinalPoint) {
+//        return Objects.nonNull(adjacentRooms.get(cardinalPoint));
+//    }
 
     public int getAnimalNumber() {
         return animals.size();
@@ -74,9 +75,9 @@ public class Room {
         return animals.remove(animal);
     }
 
-    public Room getAdjacentRoomByCardinalPoint(CardinalPoints cardinalPoint) {
-        return adjacentRooms.get(cardinalPoint);
-    }
+//    public Room getAdjacentRoomByCardinalPoint(CardinalPoints cardinalPoint) {
+//        return adjacentRooms.get(cardinalPoint);
+//    }
 
     public Door getDoorByCardinalPoint(CardinalPoints cardinalPoint) {
         return doors.get(cardinalPoint);
@@ -103,10 +104,16 @@ public class Room {
     }
 
     private String getAdjacentRoomListAsString() {
-        return adjacentRooms.keySet()
-                .stream()
-                .map(cardinalPoint -> cardinalPoint.getName().concat("(" + doors.get(cardinalPoint).getDoorStatusAsString() + ")"))
+        return doors.entrySet().stream()
+                .map(entry -> entry.getKey().getName().concat("(" + (entry.getValue().isLocked()? "locked" : "unlocked") + ")"))
                 .collect(Collectors.joining(", "));
+    }
+
+    public Item getRandomItem() {
+        return items.stream()
+                .skip(ThreadLocalRandom.current().nextInt(items.size()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
