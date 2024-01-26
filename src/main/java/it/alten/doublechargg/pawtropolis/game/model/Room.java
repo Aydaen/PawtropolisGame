@@ -17,7 +17,6 @@ public class Room {
 
     private final List<Item> items;
     private final List<Animal> animals;
-//    private final EnumMap<CardinalPoints, Room> adjacentRooms;
     @Getter
     @Setter
     private String name;
@@ -27,7 +26,6 @@ public class Room {
         this.name = name;
         items = new ArrayList<>();
         animals = new ArrayList<>();
-//        adjacentRooms = new EnumMap<>(CardinalPoints.class);
         doors = new EnumMap<>(CardinalPoints.class);
     }
 
@@ -47,21 +45,9 @@ public class Room {
         return items.contains(item);
     }
 
-//    public void addAdjacentRoom(CardinalPoints cardinalPoint, Room room) {
-//        adjacentRooms.put(cardinalPoint, room);
-//    }
-
     public void addDoor(CardinalPoints cardinalPoint, Door door) {
         doors.put(cardinalPoint, door);
     }
-
-//    public void removeAdjacentRoom(CardinalPoints cardinalPoint) {
-//        adjacentRooms.remove(cardinalPoint);
-//    }
-
-//    public boolean adjacentRoomExists(CardinalPoints cardinalPoint) {
-//        return Objects.nonNull(adjacentRooms.get(cardinalPoint));
-//    }
 
     public int getAnimalNumber() {
         return animals.size();
@@ -74,10 +60,6 @@ public class Room {
     public boolean removeItem(Animal animal) {
         return animals.remove(animal);
     }
-
-//    public Room getAdjacentRoomByCardinalPoint(CardinalPoints cardinalPoint) {
-//        return adjacentRooms.get(cardinalPoint);
-//    }
 
     public Door getDoorByCardinalPoint(CardinalPoints cardinalPoint) {
         return doors.get(cardinalPoint);
